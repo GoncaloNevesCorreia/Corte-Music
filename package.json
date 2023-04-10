@@ -1,0 +1,36 @@
+{
+  "name": "corte-music",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build/index.js",
+  "scripts": {
+    "clear": "rimraf ./build && rimraf ./bundle",
+    "build": "npm run clear && tsc",
+    "dev": "nodemon",
+    "start": "npm run build && node .",
+    "deploy": "cross-env IS_SCRIPT=true ts-node src/scripts/deploy.ts",
+    "deploy-prod": "cross-env NODE_ENV=production npm run deploy",
+    "bundle": "npm run build && npx esbuild build/index.js  --bundle --outfile=/bundle/index.cjs --format=cjs --platform=node && rimraf ./build",
+    "lint": "eslint src/**/*.{js,ts} --fix"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^18.15.3",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.0.3",
+    "esbuild": "^0.17.16",
+    "eslint": "^8.36.0",
+    "nodemon": "^2.0.21",
+    "rimraf": "^4.4.0",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "discord.js": "^14.9.0"
+  }
+}

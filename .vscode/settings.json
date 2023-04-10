@@ -1,0 +1,31 @@
+{
+  // THEMES
+  "workbench.colorTheme": "Default Dark+",
+
+  // AUTO SAVE
+  "editor.formatOnSave": true,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 2000,
+  "editor.suggestSelection": "first",
+
+  // Files
+  "explorer.autoReveal": false,
+  "files.exclude": {
+    "node_modules": true
+  },
+
+  // FORMATTING
+  "editor.wordWrapColumn": 20000000,
+  "prettier.tabWidth": 2,
+  "editor.tabSize": 2,
+  "files.eol": "\n",
+  "editor.detectIndentation": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  "tabnine.experimentalAutoImports": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.updateImportsOnFileMove.enabled": "always"
+}
