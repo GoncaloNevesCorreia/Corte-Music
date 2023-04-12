@@ -30,8 +30,3 @@ export function registerEvents(client: Client, events: IEvent<any>[]): void {
     });
   }
 }
-
-// event.exec.bind(null, {
-//   client,
-//   log: (...args) => console.log(`[${event.id}]`, ...args),
-// })

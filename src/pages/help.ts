@@ -11,17 +11,7 @@ import { chunk, createId, readId } from "../utils";
 import { StringSelectMenuBuilder } from "discord.js";
 import { ActionRowBuilder } from "discord.js";
 import { APIEmbedField } from "discord.js";
-
-export const Namespaces = {
-  root: "help_category_root",
-  select: "help_category_select",
-  action: "help_category_action",
-};
-
-export const Actions = {
-  next: "+",
-  back: "-",
-};
+import { EVENT_NAMESPACES } from "../keys/events";
 
 export function getCategoryRoot(ephemeral?: boolean): InteractionReplyOptions {
   const mappedCategories = CategoryRoot.map(
@@ -38,7 +28,7 @@ export function getCategoryRoot(ephemeral?: boolean): InteractionReplyOptions {
     .setTitle("Help Menu")
     .setDescription("Browse through all commands.");
 
-  const selectId = createId(Namespaces.select);
+  const selectId = createId(EVENT_NAMESPACES.help.select);
 
   const select = new StringSelectMenuBuilder()
     .setCustomId(selectId)
@@ -85,8 +75,8 @@ export function getCategoryPage(
 
   if (isNaN(offset)) offset = 0;
 
-  if (action === Actions.next) offset++;
-  else if (action === Actions.back) offset--;
+  if (action === EVENT_NAMESPACES.help.actions.next) offset++;
+  else if (action === EVENT_NAMESPACES.help.actions.back) offset--;
 
   const emoji = category.emoji ? `${category.emoji} ` : "";
   const defaultDescription = `Browse through ${
@@ -100,9 +90,9 @@ export function getCategoryPage(
     .setFooter({ text: `${offset + 1} / ${category.commands.length}` });
 
   const backId = createId(
-    Namespaces.action,
+    EVENT_NAMESPACES.help.action,
     category.name,
-    Actions.back,
+    EVENT_NAMESPACES.help.actions.back,
     offset
   );
 
@@ -112,13 +102,17 @@ export function getCategoryPage(
     .setStyle(ButtonStyle.Danger)
     .setDisabled(offset <= 0);
 
-  const rootId = createId(Namespaces.root);
+  const rootId = createId(EVENT_NAMESPACES.help.root);
   const rootButton = new ButtonBuilder()
     .setCustomId(rootId)
     .setLabel("Categories")
     .setStyle(ButtonStyle.Secondary);
 
-  const nextId = createId(Namespaces.action, Actions.next, offset);
+  const nextId = createId(
+    EVENT_NAMESPACES.help.action,
+    EVENT_NAMESPACES.help.actions.next,
+    offset
+  );
 
   const nextButton = new ButtonBuilder()
     .setCustomId(nextId)

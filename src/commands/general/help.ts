@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from "discord.js";
+
 import { command } from "../../utils";
 import { getCategoryRoot } from "../../pages/help";
 
