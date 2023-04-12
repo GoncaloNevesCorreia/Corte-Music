@@ -1,5 +1,5 @@
-import { EVENT_NAMESPACES } from "../../../keys/events";
-import { EditReply, Reply, event, readId } from "../../../utils";
+import { EVENT_NAMESPACES } from "../../keys/events";
+import { EditReply, Reply, event, readId } from "../../utils";
 
 export default event("interactionCreate", async ({ log }, interaction) => {
   if (!interaction.isButton() && !interaction.isStringSelectMenu()) return;
@@ -12,7 +12,15 @@ export default event("interactionCreate", async ({ log }, interaction) => {
     try {
       await interaction.deferUpdate();
 
-      event.callback(interaction, namespace);
+      if (interaction.isButton()) {
+        if ("onClick" in event) {
+          event.onClick(interaction, namespace);
+        }
+      } else {
+        if ("onSelect" in event) {
+          event.onSelect(interaction, namespace);
+        }
+      }
     } catch (error) {
       log([`[${event.name} Error]`, error]);
 

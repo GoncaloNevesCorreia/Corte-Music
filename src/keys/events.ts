@@ -1,5 +1,6 @@
-import { HelpInteractionCallback } from "../events/interactionCreate/interactions/help";
-import { SetupInteractionCallback } from "../events/interactionCreate/interactions/setup";
+import { HelpInteractionOnClick } from "../commands/general/help/interactions/onClick";
+import { HelpInteractionOnSelect } from "../commands/general/help/interactions/onSelect";
+import { SetupInteractionOnSelect } from "../commands/music/setup/interactions/onSelect";
 
 export const EVENT_NAMESPACES = {
   help: {
@@ -11,11 +12,12 @@ export const EVENT_NAMESPACES = {
       next: "+",
       back: "-",
     },
-    callback: HelpInteractionCallback,
+    onClick: HelpInteractionOnClick,
+    onSelect: HelpInteractionOnSelect,
   },
   setup: {
     name: "Setup",
     select: "setup_channel_select",
-    callback: SetupInteractionCallback,
+    onSelect: SetupInteractionOnSelect,
   },
 };

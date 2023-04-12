@@ -1,8 +1,8 @@
-import { ButtonInteraction, StringSelectMenuInteraction } from "discord.js";
-import { EVENT_NAMESPACES } from "../../../keys/events";
+import { StringSelectMenuInteraction } from "discord.js";
+import { EVENT_NAMESPACES } from "../../../../keys/events";
 
-export const SetupInteractionCallback = async (
-  interaction: StringSelectMenuInteraction | ButtonInteraction,
+export const SetupInteractionOnSelect = async (
+  interaction: StringSelectMenuInteraction,
   namespace: string
 ) => {
   switch (namespace) {
