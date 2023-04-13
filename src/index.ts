@@ -3,4 +3,4 @@ import { resolve } from "path";
 
 config({ path: resolve(__dirname, "..", ".env") });
 
-import "./client";
+import "./config/client";

@@ -6,9 +6,10 @@ import {
   EmbedBuilder,
   InteractionReplyOptions,
 } from "discord.js";
-import commands from "../../..";
 import { chunk, createId, readId } from "../../../../utils";
+
 import { EVENT_NAMESPACES } from "../../../../keys/events";
+import commands from "../../..";
 import { createButton } from "../../../../utils/ui/button";
 
 export function getHelpCategoryPage(
@@ -25,7 +26,7 @@ export function getHelpCategoryPage(
 
     return {
       ...category,
-      commands: chunk(commands, 10),
+      commands: chunk(commands, 2),
     };
   });
 
@@ -65,6 +66,7 @@ export function getHelpCategoryPage(
 
   const nextId = createId(
     EVENT_NAMESPACES.help.action,
+    category.name,
     EVENT_NAMESPACES.help.actions.next,
     offset
   );

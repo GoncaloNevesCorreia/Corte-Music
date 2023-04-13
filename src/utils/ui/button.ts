@@ -8,12 +8,12 @@ type PropsProps = {
 };
 
 export const createButton = (props: PropsProps) => {
-  const { customId, label, disabled } = props;
+  const { customId, label, disabled, style } = props;
 
   const backButton = new ButtonBuilder()
     .setCustomId(customId)
     .setLabel(label)
-    .setStyle(ButtonStyle.Primary)
+    .setStyle(style ?? ButtonStyle.Primary)
     .setDisabled(!!disabled);
 
   return backButton;

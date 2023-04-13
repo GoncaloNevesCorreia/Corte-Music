@@ -3,9 +3,10 @@ import {
   EmbedBuilder,
   InteractionReplyOptions,
 } from "discord.js";
+
+import { EVENT_NAMESPACES } from "../../../../keys/events";
 import { createId } from "../../../../utils";
 import { createSelectMenu } from "../../../../utils/ui/selectMenu";
-import { EVENT_NAMESPACES } from "../../../../keys/events";
 
 export function getSetupChannelSelection(
   options: APISelectMenuOption[],

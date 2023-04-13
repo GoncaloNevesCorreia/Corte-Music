@@ -1,8 +1,6 @@
-import { SlashCommandBuilder } from "discord.js";
-
 import { ChannelType } from "discord.js";
+import { SlashCommandBuilder } from "discord.js";
 import { command } from "../../../utils";
-
 import { getSetupChannelSelection } from "./pages/channelSelection";
 
 const meta = new SlashCommandBuilder()
