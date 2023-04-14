@@ -10,6 +10,7 @@ import { setupMusicEvents } from "./music/events";
     intents: [
       GatewayIntentBits.Guilds,
       GatewayIntentBits.GuildMembers,
+      GatewayIntentBits.GuildMessages,
       GatewayIntentBits.GuildVoiceStates,
     ],
   });

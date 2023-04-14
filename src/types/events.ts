@@ -5,6 +5,7 @@ import {
   ButtonInteraction,
   CacheType,
   StringSelectMenuInteraction,
+  Message,
 } from "discord.js";
 import interactions from "../events/interactionCreate/interactions";
 
@@ -37,5 +38,11 @@ export interface ISelectInteractionProps {
   client: Client;
   interaction: StringSelectMenuInteraction<CacheType>;
   namespace: string;
+  log: ILoggerFunction;
+}
+
+export interface IMessageCreateInteractionProps {
+  client: Client;
+  interaction: Message;
   log: ILoggerFunction;
 }

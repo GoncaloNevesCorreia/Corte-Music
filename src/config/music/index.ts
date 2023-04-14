@@ -1,10 +1,10 @@
-import { Interaction, VoiceBasedChannel } from "discord.js";
+import { Interaction, VoiceBasedChannel, Message } from "discord.js";
 import { Player, Track } from "discord-player";
 
 export const MusicActions = {
   play: async function (
     player: Player,
-    interaction: Interaction,
+    interaction: Interaction | Message,
     channel: VoiceBasedChannel
   ) {
     const queue = this.getQueue(player, interaction);
@@ -21,7 +21,7 @@ export const MusicActions = {
   },
   enqueue: async function (
     player: Player,
-    interaction: Interaction,
+    interaction: Interaction | Message,
     track: Track
   ) {
     const queue = this.getQueue(player, interaction);
@@ -32,7 +32,7 @@ export const MusicActions = {
   },
   togglePlay: async function (
     player: Player,
-    interaction: Interaction,
+    interaction: Interaction | Message,
     pause?: boolean
   ) {
     const queue = this.getQueue(player, interaction);
@@ -49,7 +49,7 @@ export const MusicActions = {
   },
   skip: function (
     player: Player,
-    interaction: Interaction,
+    interaction: Interaction | Message,
     trackNumber?: number
   ) {
     const queue = this.getQueue(player, interaction);
@@ -64,14 +64,14 @@ export const MusicActions = {
 
     queue.node.skip();
   },
-  shuffle: async function (player: Player, interaction: Interaction) {
+  shuffle: async function (player: Player, interaction: Interaction | Message) {
     const queue = this.getQueue(player, interaction);
     if (!queue) return;
 
     queue.tracks.shuffle();
   },
 
-  stop: async function (player: Player, interaction: Interaction) {
+  stop: async function (player: Player, interaction: Interaction | Message) {
     const queue = this.getQueue(player, interaction);
 
     if (!queue) return;
@@ -85,7 +85,7 @@ export const MusicActions = {
     queue.delete();
   },
 
-  repeat: async function (player: Player, interaction: Interaction) {
+  repeat: async function (player: Player, interaction: Interaction | Message) {
     const queue = this.getQueue(player, interaction);
 
     if (!queue) return false;
@@ -98,7 +98,7 @@ export const MusicActions = {
     queue.setRepeatMode(0);
     return false;
   },
-  getQueue: function (player: Player, interaction: Interaction) {
+  getQueue: function (player: Player, interaction: Interaction | Message) {
     if (!interaction.guild) return;
 
     const queue = player.nodes.get(interaction.guild);
@@ -117,7 +117,10 @@ export const MusicActions = {
     return queue;
   },
 
-  getTracks: async function (player: Player, interaction: Interaction) {
+  getTracks: async function (
+    player: Player,
+    interaction: Interaction | Message
+  ) {
     const queue = this.getQueue(player, interaction);
 
     if (!queue) return;

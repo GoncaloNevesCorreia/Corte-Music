@@ -1,6 +1,7 @@
 import commands from "../../commands";
 import { ICommand } from "../../types";
 import { EditReply, Reply, event } from "../../utils";
+import { Events } from "discord.js";
 
 const allCommands = commands.map(({ commands }) => commands).flat();
 
@@ -9,7 +10,7 @@ const allCommandsMap = new Map<string, ICommand>(
 );
 
 export default event(
-  "interactionCreate",
+  Events.InteractionCreate,
   async ({ log, client }, interaction) => {
     if (!interaction.isChatInputCommand()) return;
 

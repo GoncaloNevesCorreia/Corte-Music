@@ -1,8 +1,9 @@
 import { EVENT_NAMESPACES } from "../../keys/events";
 import { EditReply, Reply, event, readId } from "../../utils";
+import { Events } from "discord.js";
 
 export default event(
-  "interactionCreate",
+  Events.InteractionCreate,
   async ({ log, client }, interaction) => {
     if (!interaction.isButton() && !interaction.isStringSelectMenu()) return;
 
