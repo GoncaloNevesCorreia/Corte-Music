@@ -16,6 +16,7 @@ export interface IEventProps {
 }
 
 export type IEventKeys = keyof ClientEvents;
+
 export type IEventExec<T extends IEventKeys> = (
   props: IEventProps,
   ...args: ClientEvents[T]

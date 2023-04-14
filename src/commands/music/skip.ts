@@ -20,7 +20,11 @@ export default command(meta, async ({ interaction, client }) => {
 
   const trackNumber = interaction.options.getNumber("trackNumber");
 
-  await MusicActions.skip(player, interaction, trackNumber);
+  if (!trackNumber === undefined || trackNumber === null) {
+    await MusicActions.skip(player, interaction);
+  } else {
+    await MusicActions.skip(player, interaction, trackNumber);
+  }
 
   return interaction.reply({
     content: "Skiping track...",

@@ -1,5 +1,6 @@
 import { HelpInteractionOnClick } from "../commands/general/help/interactions/onClick";
 import { HelpInteractionOnSelect } from "../commands/general/help/interactions/onSelect";
+import { SetupInteractionOnClick } from "../commands/music/setup/interactions/onClick";
 import { SetupInteractionOnSelect } from "../commands/music/setup/interactions/onSelect";
 
 export const EVENT_NAMESPACES = {
@@ -19,5 +20,17 @@ export const EVENT_NAMESPACES = {
     name: "Setup",
     select: "setup_channel_select",
     onSelect: SetupInteractionOnSelect,
+  },
+  music: {
+    name: "Music",
+    action: "music_action",
+    actions: {
+      togglePlay: "⏯️",
+      skip: "⏭️",
+      stop: "⏹️",
+      shuffle: "🔀",
+      repeat: "🔁",
+    },
+    onClick: SetupInteractionOnClick,
   },
 };
