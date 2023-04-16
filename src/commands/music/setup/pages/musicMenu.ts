@@ -4,6 +4,7 @@ import {
   EmbedBuilder,
   MessageCreateOptions,
   InteractionEditReplyOptions,
+  APIEmbedField,
 } from "discord.js";
 
 import { EVENT_NAMESPACES } from "../../../../keys/events";
@@ -69,8 +70,6 @@ function setTitle(embed: EmbedBuilder, queue: GuildQueue) {
 }
 
 function setTrackList(embed: EmbedBuilder, queue: GuildQueue) {
-  if (queue.tracks.size < 1) return;
-
   const tracks = queue.tracks.map((track, index) => ({
     name: "\u200B",
     value: `**${index + 1}. **(${track.duration}) **[${track.title}](${
@@ -79,7 +78,77 @@ function setTrackList(embed: EmbedBuilder, queue: GuildQueue) {
     inline: false,
   }));
 
-  embed.addFields(tracks);
+  if (tracks.length > 0) {
+    tracks.unshift({
+      name: "\u200B",
+      value: "**Next Tracks in Queue**",
+      inline: false,
+    });
+  }
+
+  const statusFields = getStatusFields(queue);
+
+  embed.addFields([...statusFields, ...tracks]);
+}
+
+function getStatusFields(queue: GuildQueue): APIEmbedField[] {
+  const totalTime = getFullDuration(queue);
+
+  const hasCurrentTrack = !!queue.currentTrack;
+
+  return [
+    {
+      name: "Status",
+      value: "\u200B",
+      inline: false,
+    },
+    {
+      name: "Playing 🎶",
+      value: queue.node.isPlaying() ? "Yes" : "No",
+      inline: true,
+    },
+    {
+      name: "Nº of Tracks",
+      value: `${queue.tracks.size + (hasCurrentTrack ? 1 : 0)}`,
+      inline: true,
+    },
+    {
+      name: "Repeate Mode 🔁",
+      value: queue.repeatMode === 1 ? "Yes" : "No",
+      inline: true,
+    },
+    {
+      name: "Total Time of Queue ⌛",
+      value: totalTime,
+      inline: true,
+    },
+  ];
+}
+
+function getFullDuration(queue: GuildQueue) {
+  const queueDuration = queue.estimatedDuration;
+  const queueDuration2 = queue.durationFormatted;
+  const currentTrackDuration = queue.currentTrack?.durationMS ?? 0;
+
+  const durationMs = queueDuration + currentTrackDuration;
+
+  const seconds = Math.floor(durationMs / 1000) % 60;
+  const minutes = Math.floor(durationMs / 1000 / 60) % 60;
+  const hours = Math.floor(durationMs / 1000 / 60 / 60);
+
+  const parts = [];
+
+  if (hours > 0) {
+    parts.push(`${hours} hour${hours === 1 ? "" : "s"}`);
+  }
+  if (minutes > 0) {
+    parts.push(`${minutes} minute${minutes === 1 ? "" : "s"}`);
+  }
+  if (seconds > 0 || !parts.length) {
+    parts.push(`${seconds} second${seconds === 1 ? "" : "s"}`);
+  }
+
+  return parts.join(", ");
 }
 
 function getButtons(isPaused: boolean) {

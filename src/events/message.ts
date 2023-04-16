@@ -32,8 +32,9 @@ export default event(Events.MessageCreate, async ({ log, client }, message) => {
 
 async function deleteMessage(message: Message) {
   try {
+    if (!message.deletable) return;
+
     await message.delete();
-    console.log(`Deleted message with content: ${message.content}`);
   } catch (error) {
     console.error(
       `Failed to delete message with content: ${message.content}`,
