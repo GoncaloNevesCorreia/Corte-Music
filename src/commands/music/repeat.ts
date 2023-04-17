@@ -10,8 +10,6 @@ const meta = new SlashCommandBuilder()
 export default command(meta, async ({ interaction, client }) => {
   const player = Player.singleton(client);
 
-  if (!player) return;
-
   const repeatOn = await MusicActions.repeat(player, interaction);
 
   return interaction.reply({

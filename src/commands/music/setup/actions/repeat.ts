@@ -12,8 +12,6 @@ export async function repeatAction(
 
   const player = Player.singleton(client);
 
-  if (!player) return;
-
   await MusicActions.repeat(player, interaction);
 
   const queue = MusicActions.getQueue(player, interaction);

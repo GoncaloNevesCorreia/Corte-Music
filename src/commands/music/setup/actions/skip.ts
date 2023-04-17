@@ -12,8 +12,6 @@ export async function skipAction(
 
   const player = Player.singleton(client);
 
-  if (!player) return;
-
   MusicActions.skip(player, interaction);
 
   const queue = MusicActions.getQueue(player, interaction);

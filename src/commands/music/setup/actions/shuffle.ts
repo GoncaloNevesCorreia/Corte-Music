@@ -12,8 +12,6 @@ export async function shuffleAction(
 
   const player = Player.singleton(client);
 
-  if (!player) return;
-
   await MusicActions.shuffle(player, interaction);
 
   const queue = MusicActions.getQueue(player, interaction);

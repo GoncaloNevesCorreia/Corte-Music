@@ -12,8 +12,6 @@ export async function togglePlayAction(
 
   const player = Player.singleton(client);
 
-  if (!player) return;
-
   await MusicActions.togglePlay(player, interaction);
 
   const queue = MusicActions.getQueue(player, interaction);

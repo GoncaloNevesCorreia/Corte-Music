@@ -17,7 +17,7 @@ export const MusicActions = {
       await queue.connect(channel);
     }
 
-    queue.node.play(null);
+    queue.node.play();
   },
   enqueue: async function (
     player: Player,

@@ -12,8 +12,6 @@ export async function stopAction(
 
   const player = Player.singleton(client);
 
-  if (!player) return;
-
   await MusicActions.stop(player, interaction);
 
   const queue = MusicActions.getQueue(player, interaction);

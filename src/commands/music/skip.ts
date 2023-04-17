@@ -16,8 +16,6 @@ const meta = new SlashCommandBuilder()
 export default command(meta, async ({ interaction, client }) => {
   const player = Player.singleton(client);
 
-  if (!player) return;
-
   const trackNumber = interaction.options.getNumber("trackNumber");
 
   if (!trackNumber === undefined || trackNumber === null) {
