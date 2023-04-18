@@ -9,19 +9,16 @@ export default event(Events.MessageCreate, async ({ log, client }, message) => {
   if (newMessage.author === client.user) return;
 
   if (!newMessage.guild || newMessage.author.bot) {
-    await deleteMessage(newMessage);
     return;
   }
 
   const serverData = getServerData(newMessage.guild.id);
 
   if (!serverData?.embedId || !serverData?.musicChannelId) {
-    await deleteMessage(newMessage);
     return;
   }
 
   if (newMessage.channelId !== serverData.musicChannelId) {
-    await deleteMessage(newMessage);
     return;
   }
 
