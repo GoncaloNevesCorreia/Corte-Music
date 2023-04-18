@@ -36,7 +36,9 @@ export default command(meta, async ({ interaction, client }) => {
 
   const query = interaction.options.getString("query", true);
 
-  const searchResult = await player.search(query);
+  const searchResult = await player.search(query, {
+    requestedBy: interaction.user,
+  });
 
   if (!searchResult?.tracks?.length) {
     return interaction.reply({

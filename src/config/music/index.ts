@@ -1,5 +1,11 @@
-import { Interaction, VoiceBasedChannel, Message } from "discord.js";
+import {
+  Interaction,
+  VoiceBasedChannel,
+  Message,
+  ButtonInteraction,
+} from "discord.js";
 import { Player, Track } from "discord-player";
+import { updateMusicMenu } from "./events";
 
 export const MusicActions = {
   play: async function (
@@ -37,15 +43,17 @@ export const MusicActions = {
   ) {
     const queue = this.getQueue(player, interaction);
 
-    if (!queue?.connection) return false;
+    if (!queue?.connection) return;
 
-    if (queue.node.isPaused() || pause) {
+    if (queue.node.isPaused() || pause === false) {
       queue.node.resume();
-      return false;
+    } else {
+      queue.node.pause();
     }
 
-    queue.node.pause();
-    return true;
+    if (interaction instanceof ButtonInteraction)
+      updateMusicMenu(queue, interaction);
+    else updateMusicMenu(queue);
   },
   skip: function (
     player: Player,
@@ -58,17 +66,19 @@ export const MusicActions = {
 
     if (trackNumber) {
       queue.node.skipTo(trackNumber);
-
-      return;
+    } else {
+      queue.node.skip();
     }
-
-    queue.node.skip();
   },
   shuffle: async function (player: Player, interaction: Interaction | Message) {
     const queue = this.getQueue(player, interaction);
     if (!queue) return;
 
     queue.tracks.shuffle();
+
+    if (interaction instanceof ButtonInteraction)
+      updateMusicMenu(queue, interaction);
+    else updateMusicMenu(queue);
   },
 
   stop: async function (player: Player, interaction: Interaction | Message) {
@@ -82,21 +92,28 @@ export const MusicActions = {
       queue.connection.disconnect();
     }
 
+    queue.setRepeatMode(0);
+
     queue.delete();
   },
 
-  repeat: async function (player: Player, interaction: Interaction | Message) {
+  repeat: async function (
+    player: Player,
+    interaction: Interaction | Message,
+    repeatMode?: number
+  ) {
     const queue = this.getQueue(player, interaction);
 
-    if (!queue) return false;
+    if (!queue) return;
 
-    if (queue.repeatMode === 0) {
-      queue.setRepeatMode(1);
-      return true;
-    }
+    const mode =
+      repeatMode === undefined ? (queue.repeatMode + 1) % 4 : repeatMode;
 
-    queue.setRepeatMode(0);
-    return false;
+    queue.setRepeatMode(mode);
+
+    if (interaction instanceof ButtonInteraction)
+      updateMusicMenu(queue, interaction);
+    else updateMusicMenu(queue);
   },
   getQueue: function (player: Player, interaction: Interaction | Message) {
     if (!interaction.guild) return;

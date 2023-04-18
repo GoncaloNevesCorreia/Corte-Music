@@ -22,41 +22,20 @@ export const SetupInteractionOnClick = async (
 
   switch (action) {
     case EVENT_NAMESPACES.music.actions.togglePlay: {
-      const response = await togglePlayAction(props);
-
-      if (!response) return;
-
-      return await interaction.editReply(response);
+      return await togglePlayAction(props);
     }
     case EVENT_NAMESPACES.music.actions.stop: {
-      const response = await stopAction(props);
-
-      if (!response) return;
-
-      return await interaction.editReply(response);
+      return await stopAction(props);
     }
     case EVENT_NAMESPACES.music.actions.skip: {
-      const response = await skipAction(props);
-
-      if (!response) return;
-
-      return await interaction.editReply(response);
+      return await skipAction(props);
     }
     case EVENT_NAMESPACES.music.actions.shuffle: {
-      const response = await shuffleAction(props);
-
-      if (!response) return;
-
-      return await interaction.editReply(response);
+      return await shuffleAction(props);
     }
     case EVENT_NAMESPACES.music.actions.repeat: {
-      const response = await repeatAction(props);
-
-      if (!response) return;
-
-      return await interaction.editReply(response);
+      return await repeatAction(props);
     }
-
     default:
       throw new Error(`Unknown Button Action ${namespace}`);
   }

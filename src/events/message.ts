@@ -9,25 +9,25 @@ export default event(Events.MessageCreate, async ({ log, client }, message) => {
   if (newMessage.author === client.user) return;
 
   if (!newMessage.guild || newMessage.author.bot) {
-    deleteMessage(newMessage);
+    await deleteMessage(newMessage);
     return;
   }
 
   const serverData = getServerData(newMessage.guild.id);
 
   if (!serverData?.embedId || !serverData?.musicChannelId) {
-    deleteMessage(newMessage);
+    await deleteMessage(newMessage);
     return;
   }
 
   if (newMessage.channelId !== serverData.musicChannelId) {
-    deleteMessage(newMessage);
+    await deleteMessage(newMessage);
     return;
   }
 
   await playAction({ client, interaction: newMessage, log });
 
-  deleteMessage(newMessage);
+  await deleteMessage(newMessage);
 });
 
 async function deleteMessage(message: Message) {

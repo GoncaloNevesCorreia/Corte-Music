@@ -1,22 +1,13 @@
-import { InteractionEditReplyOptions } from "discord.js";
-
 import { IButtonInteractionProps } from "../../../../types";
-import { getMusicMenu } from "../pages/musicMenu";
+
 import { Player } from "discord-player";
 import { MusicActions } from "../../../../config/music";
+import { getMusicMenu } from "../pages/musicMenu";
 
-export async function skipAction(
-  props: IButtonInteractionProps
-): Promise<InteractionEditReplyOptions | undefined> {
-  const { client, interaction, log } = props;
+export async function skipAction(props: IButtonInteractionProps) {
+  const { client, interaction } = props;
 
   const player = Player.singleton(client);
 
   MusicActions.skip(player, interaction);
-
-  const queue = MusicActions.getQueue(player, interaction);
-
-  if (!queue) return;
-
-  return getMusicMenu(queue);
 }

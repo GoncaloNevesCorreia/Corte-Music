@@ -7,7 +7,7 @@ const keys: IKeys = {
   testGuild: process.env.TEST_GUILD ?? NOT_FOUND,
 };
 
-if (Object.keys(keys).includes(NOT_FOUND))
+if (Object.values(keys).includes(NOT_FOUND))
   throw new Error(`Missing environment variables...`);
 
 export default keys;

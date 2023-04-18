@@ -1,5 +1,4 @@
 import { EVENT_NAMESPACES } from "../../../../keys/events";
-import { StringSelectMenuInteraction } from "discord.js";
 import { ISelectInteractionProps } from "../../../../types";
 import { createMusicMenu } from "../pages/musicMenu";
 import { MusicActions } from "../../../../config/music";

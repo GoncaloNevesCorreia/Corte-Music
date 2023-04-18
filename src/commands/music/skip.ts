@@ -9,7 +9,7 @@ const meta = new SlashCommandBuilder()
   .addNumberOption((option) =>
     option
       .setName("track-number")
-      .setDescription("Provide the bot a message to respond with.")
+      .setDescription("The number of the track in the queue to skip to")
       .setRequired(false)
   );
 

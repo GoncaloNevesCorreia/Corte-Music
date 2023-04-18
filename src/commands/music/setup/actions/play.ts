@@ -1,12 +1,10 @@
-import { EmbedBuilder } from "discord.js";
-
 import { IMessageCreateInteractionProps } from "../../../../types";
 import { Player } from "discord-player";
 import { MusicActions } from "../../../../config/music";
 import { getMember } from "../../../../utils";
 
 export async function playAction(props: IMessageCreateInteractionProps) {
-  const { client, interaction, log } = props;
+  const { client, interaction } = props;
 
   const player = Player.singleton(client);
 
@@ -20,7 +18,9 @@ export async function playAction(props: IMessageCreateInteractionProps) {
 
   if (!interaction.content) return;
 
-  const searchResult = await player.search(interaction.content);
+  const searchResult = await player.search(interaction.content, {
+    requestedBy: interaction.author,
+  });
 
   if (!searchResult?.tracks?.length) {
     return;

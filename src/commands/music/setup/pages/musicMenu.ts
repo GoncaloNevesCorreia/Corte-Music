@@ -5,6 +5,7 @@ import {
   MessageCreateOptions,
   InteractionEditReplyOptions,
   APIEmbedField,
+  ButtonStyle,
 } from "discord.js";
 
 import { EVENT_NAMESPACES } from "../../../../keys/events";
@@ -15,7 +16,7 @@ import { GuildQueue } from "discord-player";
 function getMenu(queue: GuildQueue) {
   const embed = getEmbed(queue);
 
-  const buttons = getButtons(queue.node.isPaused());
+  const buttons = getButtons(queue.node.isPaused(), queue.repeatMode);
 
   return {
     embed: embed,
@@ -44,10 +45,26 @@ export function getMusicMenu(queue: GuildQueue): InteractionEditReplyOptions {
 function getEmbed(queue: GuildQueue) {
   const embed = new EmbedBuilder();
 
+  setMetaData(embed, queue);
   setTitle(embed, queue);
   setTrackList(embed, queue);
 
   return embed;
+}
+
+function setMetaData(embed: EmbedBuilder, queue: GuildQueue) {
+  embed
+    .setFooter({
+      text: queue.guild.client.user.tag,
+      iconURL: queue.guild.client.user.displayAvatarURL(),
+    })
+    .setAuthor({
+      name: "Github Repository",
+      url: "https://github.com/GoncaloNevesCorreia/Corte-Music",
+      iconURL:
+        "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+    })
+    .setTimestamp();
 }
 
 function setTitle(embed: EmbedBuilder, queue: GuildQueue) {
@@ -67,6 +84,13 @@ function setTitle(embed: EmbedBuilder, queue: GuildQueue) {
     .setDescription(`Duration: ${queue.currentTrack.duration}`)
     .setImage(queue.currentTrack.thumbnail)
     .setThumbnail(queue.currentTrack.thumbnail);
+
+  if (!queue.currentTrack.requestedBy) return;
+
+  embed.setFooter({
+    text: `Requested by ${queue.currentTrack.requestedBy.tag}`,
+    iconURL: queue.currentTrack.requestedBy.displayAvatarURL(),
+  });
 }
 
 function setTrackList(embed: EmbedBuilder, queue: GuildQueue) {
@@ -114,7 +138,7 @@ function getStatusFields(queue: GuildQueue): APIEmbedField[] {
     },
     {
       name: "Repeate Mode 🔁",
-      value: queue.repeatMode === 1 ? "Yes" : "No",
+      value: ["OFF", "TRACK", "QUEUE", "AUTOPLAY"][queue.repeatMode],
       inline: true,
     },
     {
@@ -127,7 +151,7 @@ function getStatusFields(queue: GuildQueue): APIEmbedField[] {
 
 function getFullDuration(queue: GuildQueue) {
   const queueDuration = queue.estimatedDuration;
-  const queueDuration2 = queue.durationFormatted;
+
   const currentTrackDuration = queue.currentTrack?.durationMS ?? 0;
 
   const durationMs = queueDuration + currentTrackDuration;
@@ -151,7 +175,7 @@ function getFullDuration(queue: GuildQueue) {
   return parts.join(", ");
 }
 
-function getButtons(isPaused: boolean) {
+function getButtons(isPaused: boolean, repeatMode: number) {
   const playId = createId(
     EVENT_NAMESPACES.music.action,
     EVENT_NAMESPACES.music.actions.togglePlay
@@ -159,7 +183,10 @@ function getButtons(isPaused: boolean) {
 
   const playButtonEmoji = isPaused ? "⏸️" : "▶️";
 
-  const playButton = createButton({ customId: playId, emoji: playButtonEmoji });
+  const playButton = createButton({
+    customId: playId,
+    emoji: playButtonEmoji,
+  });
 
   const skipId = createId(
     EVENT_NAMESPACES.music.action,
@@ -168,33 +195,45 @@ function getButtons(isPaused: boolean) {
 
   const skipButton = createButton({ customId: skipId, emoji: "⏭️" });
 
-  const stopId = createId(
-    EVENT_NAMESPACES.music.action,
-    EVENT_NAMESPACES.music.actions.stop
-  );
-
-  const stopButton = createButton({ customId: stopId, emoji: "⏹️" });
-
   const repeatId = createId(
     EVENT_NAMESPACES.music.action,
     EVENT_NAMESPACES.music.actions.repeat
   );
 
-  const repeatButton = createButton({ customId: repeatId, emoji: "🔁" });
+  const repeatButtonEmoji = ["↪", "🔂", "🔁", "♾"];
+
+  const repeatButton = createButton({
+    customId: repeatId,
+    emoji: repeatButtonEmoji[repeatMode],
+  });
 
   const shuffleId = createId(
     EVENT_NAMESPACES.music.action,
     EVENT_NAMESPACES.music.actions.shuffle
   );
 
-  const shuffleButton = createButton({ customId: shuffleId, emoji: "🔀" });
+  const shuffleButton = createButton({
+    customId: shuffleId,
+    emoji: "🔀",
+  });
+
+  const stopId = createId(
+    EVENT_NAMESPACES.music.action,
+    EVENT_NAMESPACES.music.actions.stop
+  );
+
+  const stopButton = createButton({
+    customId: stopId,
+    emoji: "⏹️",
+    style: ButtonStyle.Danger,
+  });
 
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
     playButton,
-    stopButton,
     skipButton,
     repeatButton,
     shuffleButton,
+    stopButton,
   ]);
 
   return row;
