@@ -19,9 +19,6 @@ export function setupMusicEvents(player: Player) {
   player.events.on("audioTracksRemove", async (queue) => {
     updateMusicMenu(queue);
   });
-  player.events.on("connection", async (queue) => {
-    updateMusicMenu(queue);
-  });
   player.events.on("disconnect", async (queue) => {
     queue.node.stop();
 
@@ -33,7 +30,6 @@ export function setupMusicEvents(player: Player) {
   });
 
   player.events.on("emptyQueue", async (queue) => {
-    queue.clear();
     updateMusicMenu(queue);
   });
   player.events.on("playerSkip", async (queue) => {
@@ -41,6 +37,13 @@ export function setupMusicEvents(player: Player) {
   });
   player.events.on("playerStart", async (queue) => {
     updateMusicMenu(queue);
+  });
+
+  player.events.on("playerError", async (queue, error, track) => {
+    console.error("[Player Error]: ", track.title, error);
+  });
+  player.events.on("error", async (queue, error) => {
+    console.error("[ERROR]: ", error);
   });
 }
 

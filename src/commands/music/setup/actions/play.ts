@@ -26,9 +26,14 @@ export async function playAction(props: IMessageCreateInteractionProps) {
     return;
   }
 
-  const track = searchResult.tracks[0];
+  if (searchResult.playlist) {
+    const tracks = searchResult.playlist.tracks;
+    await MusicActions.enqueue(player, interaction, tracks);
+  } else {
+    const track = searchResult.tracks[0];
 
-  MusicActions.enqueue(player, interaction, track);
+    MusicActions.enqueue(player, interaction, track);
+  }
 
   await MusicActions.play(player, interaction, member.voice.channel);
 }

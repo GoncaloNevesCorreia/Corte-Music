@@ -6,50 +6,88 @@ import {
   InteractionEditReplyOptions,
   APIEmbedField,
   ButtonStyle,
+  Guild,
 } from "discord.js";
 
 import { EVENT_NAMESPACES } from "../../../../keys/events";
-import { createId } from "../../../../utils";
+import { Colors, chunk, createId } from "../../../../utils";
 import { createButton } from "../../../../utils/ui/button";
-import { GuildQueue } from "discord-player";
+import { GuildQueue, Track } from "discord-player";
 
-function getMenu(queue: GuildQueue) {
-  const embed = getEmbed(queue);
+const SONGS_PER_PAGE = 5;
+type PageActionType = "last" | "first" | -1 | 1 | 0;
 
-  const buttons = getButtons(queue.node.isPaused(), queue.repeatMode);
+function getMenu(queue: GuildQueue, pageAction?: PageActionType) {
+  const action = pageAction ?? 0;
+
+  const trackChunks = chunk(queue.tracks.toArray(), SONGS_PER_PAGE);
+
+  const page = changeQueuePage(queue.guild, trackChunks.length, action);
+
+  const tracks = trackChunks[page];
+
+  const embed = getEmbed(queue, tracks ?? [], page + 1);
+
+  const rows = getButtons({
+    isPaused: queue.node.isPaused(),
+    repeatMode: queue.repeatMode,
+    queuePageNumber: page,
+    totalPages: trackChunks.length,
+  });
 
   return {
     embed: embed,
-    row: buttons,
+    rows: rows,
   };
 }
 
 export function createMusicMenu(queue: GuildQueue): MessageCreateOptions {
-  const { embed, row } = getMenu(queue);
+  const { embed, rows } = getMenu(queue);
 
   return {
     embeds: [embed],
-    components: [row],
+    components: rows,
   };
 }
 
-export function getMusicMenu(queue: GuildQueue): InteractionEditReplyOptions {
-  const { embed, row } = getMenu(queue);
+export function getMusicMenu(
+  queue: GuildQueue,
+  pageAction?: PageActionType
+): InteractionEditReplyOptions {
+  const { embed, rows } = getMenu(queue, pageAction);
 
   return {
     embeds: [embed],
-    components: [row],
+    components: rows,
   };
 }
 
-function getEmbed(queue: GuildQueue) {
+function getEmbed(queue: GuildQueue, tracks: Track[], currentPage: number) {
   const embed = new EmbedBuilder();
 
+  setColor(embed, queue);
   setMetaData(embed, queue);
   setTitle(embed, queue);
-  setTrackList(embed, queue);
+  setTrackList(embed, queue, tracks, currentPage);
 
   return embed;
+}
+
+function setColor(embed: EmbedBuilder, queue: GuildQueue) {
+  const isPlaying = queue.node.isPlaying();
+  const isEmpty = queue.isEmpty() && !queue.currentTrack;
+
+  if (isEmpty) {
+    embed.setColor(Colors.error);
+    return;
+  }
+
+  if (isPlaying) {
+    embed.setColor(Colors.success);
+    return;
+  }
+
+  embed.setColor(Colors.idle);
 }
 
 function setMetaData(embed: EmbedBuilder, queue: GuildQueue) {
@@ -93,12 +131,17 @@ function setTitle(embed: EmbedBuilder, queue: GuildQueue) {
   });
 }
 
-function setTrackList(embed: EmbedBuilder, queue: GuildQueue) {
-  const tracks = queue.tracks.map((track, index) => ({
+function setTrackList(
+  embed: EmbedBuilder,
+  queue: GuildQueue,
+  chunkedTracks: Track[],
+  currentPage: number
+) {
+  const tracks = chunkedTracks.map((track, index) => ({
     name: "\u200B",
-    value: `**${index + 1}. **(${track.duration}) **[${track.title}](${
-      track.url
-    })**`,
+    value: `**${SONGS_PER_PAGE * (currentPage - 1) + index + 1}. **(${
+      track.duration
+    }) **[${track.title}](${track.url})**`,
     inline: false,
   }));
 
@@ -175,7 +218,16 @@ function getFullDuration(queue: GuildQueue) {
   return parts.join(", ");
 }
 
-function getButtons(isPaused: boolean, repeatMode: number) {
+interface CreateButtonsProps {
+  isPaused: boolean;
+  repeatMode: number;
+  queuePageNumber: number;
+  totalPages: number;
+}
+
+function getButtons(props: CreateButtonsProps) {
+  const { isPaused, repeatMode, queuePageNumber, totalPages } = props;
+
   const playId = createId(
     EVENT_NAMESPACES.music.action,
     EVENT_NAMESPACES.music.actions.togglePlay
@@ -224,11 +276,11 @@ function getButtons(isPaused: boolean, repeatMode: number) {
 
   const stopButton = createButton({
     customId: stopId,
-    emoji: "⏹️",
+    emoji: "✖",
     style: ButtonStyle.Danger,
   });
 
-  const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
+  const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
     playButton,
     skipButton,
     repeatButton,
@@ -236,5 +288,129 @@ function getButtons(isPaused: boolean, repeatMode: number) {
     stopButton,
   ]);
 
-  return row;
+  const rows = [actionRow];
+
+  if (totalPages > 1) {
+    const prevQueuePageId = createId(
+      EVENT_NAMESPACES.music.action,
+      EVENT_NAMESPACES.music.actions.prevQueuePage
+    );
+
+    const nextQueuePageId = createId(
+      EVENT_NAMESPACES.music.action,
+      EVENT_NAMESPACES.music.actions.nextQueuePage
+    );
+
+    const gotoLastQueuePageId = createId(
+      EVENT_NAMESPACES.music.action,
+      EVENT_NAMESPACES.music.actions.lastPage
+    );
+
+    const gotoFirstQueuePageId = createId(
+      EVENT_NAMESPACES.music.action,
+      EVENT_NAMESPACES.music.actions.firstPage
+    );
+
+    const prevQueuePageButton = createButton({
+      customId: prevQueuePageId,
+      emoji: "⬅",
+      style: ButtonStyle.Primary,
+      disabled: queuePageNumber - 1 < 0,
+    });
+    const nextQueuePageButton = createButton({
+      customId: nextQueuePageId,
+      emoji: "➡",
+      style: ButtonStyle.Primary,
+      disabled: queuePageNumber + 1 >= totalPages,
+    });
+
+    const goToFirstQueuePageButton = createButton({
+      customId: gotoFirstQueuePageId,
+      label: "First",
+      style: ButtonStyle.Secondary,
+      disabled: queuePageNumber === 0,
+    });
+    const clearQueuePageButton = createButton({
+      customId: "current_page_number",
+      label: `${queuePageNumber + 1} / ${totalPages}`,
+      style: ButtonStyle.Success,
+      disabled: true,
+    });
+    const goToLastQueuePageButton = createButton({
+      customId: gotoLastQueuePageId,
+      label: "Last",
+      style: ButtonStyle.Secondary,
+      disabled: queuePageNumber >= totalPages - 1,
+    });
+
+    const paginationRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
+      prevQueuePageButton,
+      goToFirstQueuePageButton,
+      clearQueuePageButton,
+      goToLastQueuePageButton,
+      nextQueuePageButton,
+    ]);
+
+    rows.push(paginationRow);
+  }
+
+  return rows;
+}
+
+type GuildPagination = {
+  queue: number;
+};
+
+const serverPages = new Map<string, GuildPagination>();
+
+function changeQueuePage(
+  guild: Guild,
+  totalPages: number,
+  pageAction: PageActionType
+) {
+  const guildData = getGuildPage(guild.id);
+
+  if (pageAction === 0) {
+    if (totalPages <= 1) {
+      guildData.queue = 0;
+    } else if (guildData.queue + 1 >= totalPages) {
+      guildData.queue = totalPages - 1;
+    }
+
+    return guildData.queue;
+  }
+
+  if (pageAction === "first") {
+    guildData.queue = 0;
+    return 0;
+  }
+
+  if (pageAction === "last") {
+    guildData.queue = totalPages - 1;
+    return totalPages - 1;
+  }
+
+  if (guildData.queue + pageAction >= totalPages) {
+    guildData.queue = totalPages - 1;
+    return guildData.queue;
+  }
+
+  if (guildData.queue + pageAction < 0) {
+    guildData.queue = 0;
+    return 0;
+  }
+
+  guildData.queue += pageAction;
+
+  return guildData.queue;
+}
+
+function getGuildPage(id: string): GuildPagination {
+  const guildData = serverPages.get(id);
+
+  if (guildData) return guildData;
+
+  const data = { queue: 0 };
+  serverPages.set(id, data);
+  return data;
 }

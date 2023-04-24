@@ -36,6 +36,6 @@ main()
       ? `Successfully released commands in production as ${tag}!`
       : `Successfully released commands in development in ${keys.testGuild} as ${tag}!`;
 
-    console.log(response);
+    console.info(response);
   })
   .catch(console.error);

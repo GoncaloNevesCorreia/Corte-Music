@@ -24,8 +24,9 @@ import { setupMusicEvents } from "./music/events";
 
   const player = Player.singleton(client, {
     ytdlOptions: {
-      quality: "highestaudio",
+      filter: "audioonly",
       highWaterMark: 1 << 25,
+      dlChunkSize: 0,
     },
   });
 

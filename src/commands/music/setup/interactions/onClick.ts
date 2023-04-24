@@ -1,3 +1,5 @@
+import { Player } from "discord-player";
+import { MusicActions } from "../../../../config/music";
 import { EVENT_NAMESPACES } from "../../../../keys/events";
 import { IButtonInteractionProps } from "../../../../types";
 import { readId } from "../../../../utils";
@@ -6,6 +8,7 @@ import { shuffleAction } from "../actions/shuffle";
 import { skipAction } from "../actions/skip";
 import { stopAction } from "../actions/stop";
 import { togglePlayAction } from "../actions/togglePlay";
+import { getMusicMenu } from "../pages/musicMenu";
 
 export const SetupInteractionOnClick = async (
   props: IButtonInteractionProps
@@ -15,6 +18,8 @@ export const SetupInteractionOnClick = async (
   if (namespace !== EVENT_NAMESPACES.music.action) {
     throw new Error(`Unknown namespace ${namespace}`);
   }
+
+  const player = Player.singleton(client);
 
   const id = interaction.customId;
 
@@ -36,6 +41,36 @@ export const SetupInteractionOnClick = async (
     case EVENT_NAMESPACES.music.actions.repeat: {
       return await repeatAction(props);
     }
+    case EVENT_NAMESPACES.music.actions.nextQueuePage: {
+      const queue = MusicActions.getQueue(player, interaction);
+
+      if (!queue) return;
+
+      return await interaction.editReply(getMusicMenu(queue, 1));
+    }
+    case EVENT_NAMESPACES.music.actions.prevQueuePage: {
+      const queue = MusicActions.getQueue(player, interaction);
+
+      if (!queue) return;
+
+      return await interaction.editReply(getMusicMenu(queue, -1));
+    }
+
+    case EVENT_NAMESPACES.music.actions.firstPage: {
+      const queue = MusicActions.getQueue(player, interaction);
+
+      if (!queue) return;
+
+      return await interaction.editReply(getMusicMenu(queue, "first"));
+    }
+    case EVENT_NAMESPACES.music.actions.lastPage: {
+      const queue = MusicActions.getQueue(player, interaction);
+
+      if (!queue) return;
+
+      return await interaction.editReply(getMusicMenu(queue, "last"));
+    }
+
     default:
       throw new Error(`Unknown Button Action ${namespace}`);
   }

@@ -16,15 +16,24 @@ const meta = new SlashCommandBuilder()
 export default command(meta, async ({ interaction, client }) => {
   const player = Player.singleton(client);
 
-  const trackNumber = interaction.options.getNumber("trackNumber");
+  const trackNumber = interaction.options.getNumber("track-number");
 
-  if (!trackNumber === undefined || trackNumber === null) {
-    await MusicActions.skip(player, interaction);
+  if (trackNumber === undefined || trackNumber === null) {
+    MusicActions.skip(player, interaction);
   } else {
-    await MusicActions.skip(player, interaction, trackNumber);
+    const trackIndex = trackNumber - 1;
+    const tracks = await MusicActions.getTracks(player, interaction);
+
+    if (trackIndex <= 0 || !tracks || trackIndex > tracks.length)
+      return await interaction.reply({
+        content: "Track not found...",
+        ephemeral: true,
+      });
+
+    MusicActions.skip(player, interaction, trackIndex);
   }
 
-  return interaction.reply({
+  return await interaction.reply({
     content: "Skiping track...",
     ephemeral: true,
   });

@@ -47,20 +47,31 @@ export default command(meta, async ({ interaction, client }) => {
     });
   }
 
-  const track = searchResult.tracks[0];
+  const embed = new EmbedBuilder();
 
-  MusicActions.enqueue(player, interaction, track);
+  if (searchResult.playlist) {
+    const tracks = searchResult.playlist.tracks;
+
+    await MusicActions.enqueue(player, interaction, tracks);
+
+    embed.setDescription(
+      `Playlist with **${tracks.length}** was added to the Queue`
+    );
+  } else {
+    const track = searchResult.tracks[0];
+
+    MusicActions.enqueue(player, interaction, track);
+
+    embed
+      .setDescription(
+        `**[${track.title}](${track.url})** has been added to the Queue`
+      )
+      .setThumbnail(track.thumbnail)
+      .setFooter({ text: `Duration: ${track.duration}` });
+  }
 
   await MusicActions.play(player, interaction, member.voice.channel);
 
-  const embed = new EmbedBuilder()
-    .setDescription(
-      `**[${track.title}](${track.url})** has been added to the Queue`
-    )
-    .setThumbnail(track.thumbnail)
-    .setFooter({ text: `Duration: ${track.duration}` });
-
-  // Respond with the embed containing information about the player
   await interaction.reply({
     embeds: [embed],
     ephemeral: true,

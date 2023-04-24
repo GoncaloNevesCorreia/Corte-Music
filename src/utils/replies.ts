@@ -1,7 +1,9 @@
 import { InteractionReplyOptions, WebhookMessageEditOptions } from "discord.js";
 
 export const Colors = {
-  error: 0xf54242,
+  error: 0xed4245,
+  success: 0x57f287,
+  idle: 0xfee75c,
 };
 
 export const Reply = {
