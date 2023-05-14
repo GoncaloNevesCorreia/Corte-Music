@@ -22,5 +22,5 @@ export default command(meta, async ({ interaction, client }) => {
 
   await MusicActions.volume(player, interaction, volume);
 
-  return interaction.reply(Reply.success(`Setting Volume to ${volume}...`));
+  return Reply.success(interaction, `Setting Volume to ${volume}...`);
 });

@@ -1,4 +1,8 @@
-import { InteractionReplyOptions, WebhookMessageEditOptions } from "discord.js";
+import {
+  ButtonInteraction,
+  ChatInputCommandInteraction,
+  StringSelectMenuInteraction,
+} from "discord.js";
 import { createEmbed } from "./ui/embed";
 
 export const Colors = {
@@ -7,50 +11,95 @@ export const Colors = {
   idle: 0xfee75c,
 };
 
+type PossibleInteractions =
+  | ButtonInteraction
+  | ChatInputCommandInteraction
+  | StringSelectMenuInteraction;
+
 export const Reply = {
-  error(msg: string): InteractionReplyOptions {
-    return {
-      ephemeral: true,
-      embeds: [
-        createEmbed({
-          title: msg,
-          color: Colors.error,
-        }),
-      ],
-    };
+  async error(
+    interaction: PossibleInteractions,
+    msg: string,
+    deleteMsg = true
+  ) {
+    return await interaction
+      .reply({
+        ephemeral: true,
+        embeds: [
+          createEmbed({
+            title: msg,
+            color: Colors.error,
+          }),
+        ],
+      })
+      .then((msg) => {
+        if (!deleteMsg) return;
+
+        setTimeout(() => msg.delete(), 10000);
+      });
   },
-  success(msg: string): InteractionReplyOptions {
-    return {
-      ephemeral: true,
-      embeds: [
-        createEmbed({
-          title: msg,
-          color: Colors.success,
-        }),
-      ],
-    };
+  async success(
+    interaction: PossibleInteractions,
+    msg: string,
+    deleteMsg = true
+  ) {
+    return await interaction
+      .reply({
+        ephemeral: true,
+        embeds: [
+          createEmbed({
+            title: msg,
+            color: Colors.success,
+          }),
+        ],
+      })
+      .then((msg) => {
+        if (!deleteMsg) return;
+
+        setTimeout(() => msg.delete(), 10000);
+      });
   },
 };
 
 export const EditReply = {
-  error(msg: string): WebhookMessageEditOptions {
-    return {
-      embeds: [
-        createEmbed({
-          title: msg,
-          color: Colors.error,
-        }),
-      ],
-    };
+  async error(
+    interaction: PossibleInteractions,
+    msg: string,
+    deleteMsg = false
+  ) {
+    return await interaction
+      .editReply({
+        embeds: [
+          createEmbed({
+            title: msg,
+            color: Colors.error,
+          }),
+        ],
+      })
+      .then((msg) => {
+        if (!deleteMsg) return;
+
+        setTimeout(() => msg.delete(), 10000);
+      });
   },
-  success(msg: string): WebhookMessageEditOptions {
-    return {
-      embeds: [
-        createEmbed({
-          title: msg,
-          color: Colors.success,
-        }),
-      ],
-    };
+  async success(
+    interaction: PossibleInteractions,
+    msg: string,
+    deleteMsg = false
+  ) {
+    return await interaction
+      .editReply({
+        embeds: [
+          createEmbed({
+            title: msg,
+            color: Colors.success,
+          }),
+        ],
+      })
+      .then((msg) => {
+        if (!deleteMsg) return;
+
+        setTimeout(() => msg.delete(), 10000);
+      });
   },
 };

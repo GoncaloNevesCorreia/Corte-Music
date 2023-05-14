@@ -13,7 +13,7 @@ export default command(meta, async ({ interaction, client }) => {
   const wasStoped = await MusicActions.stop(player, interaction);
 
   if (!wasStoped)
-    return interaction.reply(Reply.error("The Queue is already empty."));
+    return Reply.error(interaction, "The Queue is already empty.");
 
-  return interaction.reply(Reply.success("Bye 👋"));
+  return Reply.success(interaction, "Bye 👋");
 });

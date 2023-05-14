@@ -33,7 +33,7 @@ export default command(meta, async ({ interaction, client }) => {
   const guild = interaction.guild;
 
   if (!member?.voice?.channel || !guild) {
-    return interaction.reply(Reply.error(errorMessages.noVoiceChannel));
+    return Reply.error(interaction, errorMessages.noVoiceChannel);
   }
 
   const query = interaction.options.getString("query", true);
@@ -43,7 +43,7 @@ export default command(meta, async ({ interaction, client }) => {
   });
 
   if (!searchResult?.tracks?.length) {
-    return interaction.reply(Reply.error(errorMessages.noResults));
+    return Reply.error(interaction, errorMessages.noResults);
   }
 
   const embed = new EmbedBuilder();

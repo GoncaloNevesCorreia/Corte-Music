@@ -40,13 +40,10 @@ export default command(meta, async ({ interaction, client }) => {
   const filterWasSet = await MusicActions.filter(player, interaction, filter);
 
   if (!filterWasSet) {
-    return interaction.reply(
-      Reply.error("Can't set a filter on a Empty Queue.")
-    );
+    return Reply.error(interaction, "Can't set a filter on a Empty Queue.");
   }
 
-  if (!filter)
-    return interaction.reply(Reply.success("Disabled Active Filters..."));
+  if (!filter) return Reply.success(interaction, "Disabled Active Filters...");
 
-  return interaction.reply(Reply.success(`Setting Filter to ${filter}...`));
+  return Reply.success(interaction, `Setting Filter to ${filter}...`);
 });

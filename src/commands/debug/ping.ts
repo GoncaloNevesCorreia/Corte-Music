@@ -15,13 +15,11 @@ const meta = new SlashCommandBuilder()
 
 export default command(meta, async ({ interaction }) => {
   const message = interaction.options.getString("message");
-
-  interaction.reply(
-    Reply.error(
-      message ??
-        `Pong! 🏓\nThe Response time is ${
-          Date.now() - interaction.createdTimestamp
-        }ms`
-    )
+  Reply.error(
+    interaction,
+    message ??
+      `Pong! 🏓\nThe Response time is ${
+        Date.now() - interaction.createdTimestamp
+      }ms`
   );
 });

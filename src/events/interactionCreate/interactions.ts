@@ -28,11 +28,9 @@ export default event(
         log([`[${event.name} Error]`, error]);
 
         if (interaction.deferred)
-          return interaction.editReply(
-            EditReply.error("Something went wrong 😔")
-          );
+          return EditReply.error(interaction, "Something went wrong 😔");
 
-        return interaction.reply(Reply.error("Something went wrong 😔"));
+        return Reply.error(interaction, "Something went wrong 😔", false);
       }
     });
   }

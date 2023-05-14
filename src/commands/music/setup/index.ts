@@ -13,8 +13,10 @@ export default command(meta, async ({ interaction }) => {
   );
 
   if (!textChannels) {
-    await interaction.reply(Reply.error("There are no channels in this guild"));
-    return;
+    return await Reply.error(
+      interaction,
+      "There are no channels in this guild"
+    );
   }
 
   const options = textChannels.map((channel) => ({

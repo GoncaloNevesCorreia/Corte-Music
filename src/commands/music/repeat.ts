@@ -27,14 +27,13 @@ export default command(meta, async ({ interaction, client }) => {
   const wasRepeatModeSet = await MusicActions.repeat(player, interaction, mode);
 
   if (!wasRepeatModeSet) {
-    return interaction.reply(
-      Reply.error("Can't set a repeat mode on a Empty Queue.")
+    return Reply.error(
+      interaction,
+      "Can't set a repeat mode on a Empty Queue."
     );
   }
 
   const modeName = ["OFF", "TRACK", "QUEUE", "AUTOPLAY"][mode];
 
-  await interaction.reply(
-    Reply.success(`Repeat mode is set to **${modeName}**`)
-  );
+  await Reply.success(interaction, `Repeat mode is set to **${modeName}**`);
 });

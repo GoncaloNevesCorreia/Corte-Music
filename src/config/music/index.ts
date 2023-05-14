@@ -81,6 +81,8 @@ export const MusicActions = {
 
     if (!queue?.connection) return false;
 
+    if (!queue.tracks.size && !queue.currentTrack) return false;
+
     if (queue.node.isPaused() || pause === false) {
       queue.node.resume();
     } else {
@@ -101,6 +103,8 @@ export const MusicActions = {
     const queue = this.getQueue(player, interaction);
 
     if (!queue) return false;
+
+    if (!queue.tracks.size && !queue.currentTrack) return false;
 
     if (trackNumber) {
       queue.node.skipTo(trackNumber);

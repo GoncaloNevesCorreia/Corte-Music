@@ -13,9 +13,7 @@ export default command(meta, async ({ interaction, client }) => {
   const wasShuffled = await MusicActions.shuffle(player, interaction);
 
   if (wasShuffled)
-    return interaction.reply(
-      Reply.error("No song to play... the queue is empty.")
-    );
+    return Reply.error(interaction, "No song to play... the queue is empty.");
 
-  return interaction.reply(Reply.success("shuffling Queue..."));
+  return Reply.success(interaction, "shuffling Queue...");
 });
