@@ -1,4 +1,4 @@
-import { ButtonInteraction } from "discord.js";
+import { ButtonInteraction, Client } from "discord.js";
 import { GuildQueue, Player } from "discord-player";
 import { getChannelById } from "../../utils";
 import { getServerData, saveServerData } from "../../keys/servers";
@@ -6,7 +6,15 @@ import { getServerData, saveServerData } from "../../keys/servers";
 import { TextChannel } from "discord.js";
 import { getMusicMenu } from "../../commands/music/setup/pages/musicMenu";
 
-export function setupMusicEvents(player: Player) {
+export function setupMusicEvents(client: Client) {
+  const player = Player.singleton(client, {
+    ytdlOptions: {
+      filter: "audioonly",
+      highWaterMark: 1 << 25,
+      dlChunkSize: 0,
+    },
+  });
+
   player.events.on("audioTrackAdd", async (queue) => {
     updateMusicMenu(queue);
   });

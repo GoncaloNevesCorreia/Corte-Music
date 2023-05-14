@@ -1,6 +1,11 @@
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync, writeFileSync, existsSync } from "fs";
+import { join } from "path";
 
 const fileName = "servers.json";
+
+if (!existsSync(join(__filename, fileName))) {
+  writeFileSync(fileName, "{}", "utf8");
+}
 
 const state = {
   servers: JSON.parse(readFileSync(fileName, "utf8") || "{}") as ServerData,
@@ -35,6 +40,7 @@ export function saveServerData({
   embedId,
 }: SaveSererProps) {
   const serverData = {
+    ...state,
     [guildId]: {
       musicChannelId: musicChannelId,
       embedId: embedId,

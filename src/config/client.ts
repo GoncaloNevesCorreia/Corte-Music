@@ -22,13 +22,5 @@ import { setupMusicEvents } from "./music/events";
     process.exit(1);
   });
 
-  const player = Player.singleton(client, {
-    ytdlOptions: {
-      filter: "audioonly",
-      highWaterMark: 1 << 25,
-      dlChunkSize: 0,
-    },
-  });
-
-  setupMusicEvents(player);
+  setupMusicEvents(client);
 })();

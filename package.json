@@ -10,7 +10,7 @@
     "start": "npm run build && node .",
     "deploy": "cross-env IS_SCRIPT=true ts-node src/scripts/deploy.ts",
     "deploy-prod": "cross-env NODE_ENV=production npm run deploy",
-    "bundle": "npm run build && npx esbuild build/index.js  --bundle --outfile=/bundle/index.cjs --format=cjs --platform=node --analyze && rimraf ./build",
+    "bundle": "node esbuild.config.js",
     "lint": "eslint src/**/*.{js,ts} --fix"
   },
   "keywords": [],
@@ -30,10 +30,12 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
+    "@discord-player/extractor": "^4.2.1",
+    "@discordjs/opus": "^0.9.0",
     "discord-player": "^6.1.1",
     "discord.js": "^14.9.0",
     "dotenv": "^16.0.3",
-    "play-dl": "^1.9.6",
+    "ffmpeg-static": "^5.1.0",
     "ytdl-core": "^4.11.4"
   }
 }

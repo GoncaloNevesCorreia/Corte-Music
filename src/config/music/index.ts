@@ -159,9 +159,9 @@ export const MusicActions = {
 
     if (!filter) return await queue.filters.ffmpeg.toggle(enabledFilters);
 
-    await queue.filters.ffmpeg.toggle([...enabledFilters, filter]);
+    const filters = new Set<keyof QueueFilters>([...enabledFilters, filter]);
 
-    // if (filter) await queue.filters.ffmpeg.setFilters([filter]);
+    await queue.filters.ffmpeg.toggle([...filters]);
   },
   getQueue: function (player: Player, interaction: Interaction | Message) {
     if (!interaction.guild) return;
