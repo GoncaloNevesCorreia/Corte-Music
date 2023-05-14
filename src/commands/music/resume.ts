@@ -1,7 +1,7 @@
 import { MusicActions } from "../../config/music";
 import { Player } from "discord-player";
 import { SlashCommandBuilder } from "discord.js";
-import { command } from "../../utils";
+import { Reply, command } from "../../utils";
 
 const meta = new SlashCommandBuilder()
   .setName("resume")
@@ -10,10 +10,12 @@ const meta = new SlashCommandBuilder()
 export default command(meta, async ({ interaction, client }) => {
   const player = Player.singleton(client);
 
-  await MusicActions.togglePlay(player, interaction, false);
+  const wasResumed = await MusicActions.togglePlay(player, interaction, false);
 
-  return interaction.reply({
-    content: "Resuming...",
-    ephemeral: true,
-  });
+  if (!wasResumed)
+    return interaction.reply(
+      Reply.error("No song to resume... the queue is empty.")
+    );
+
+  return interaction.reply(Reply.success("Resuming..."));
 });

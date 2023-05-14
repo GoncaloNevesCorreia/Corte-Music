@@ -1,7 +1,7 @@
 import { MusicActions } from "../../config/music";
 import { Player } from "discord-player";
 import { SlashCommandBuilder } from "discord.js";
-import { command } from "../../utils";
+import { Reply, command } from "../../utils";
 
 const meta = new SlashCommandBuilder()
   .setName("repeat")
@@ -24,12 +24,17 @@ export default command(meta, async ({ interaction, client }) => {
 
   const mode = interaction.options.getNumber("mode", true);
 
-  await MusicActions.repeat(player, interaction, mode);
+  const wasRepeatModeSet = await MusicActions.repeat(player, interaction, mode);
+
+  if (!wasRepeatModeSet) {
+    return interaction.reply(
+      Reply.error("Can't set a repeat mode on a Empty Queue.")
+    );
+  }
 
   const modeName = ["OFF", "TRACK", "QUEUE", "AUTOPLAY"][mode];
 
-  await interaction.reply({
-    content: `Repeat mode is set to **${modeName}**`,
-    ephemeral: true,
-  });
+  await interaction.reply(
+    Reply.success(`Repeat mode is set to **${modeName}**`)
+  );
 });

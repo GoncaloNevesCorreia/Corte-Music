@@ -1,7 +1,7 @@
 import { MusicActions } from "../../config/music";
 import { Player } from "discord-player";
 import { SlashCommandBuilder } from "discord.js";
-import { command } from "../../utils";
+import { Reply, command } from "../../utils";
 
 const meta = new SlashCommandBuilder()
   .setName("volume")
@@ -22,8 +22,5 @@ export default command(meta, async ({ interaction, client }) => {
 
   await MusicActions.volume(player, interaction, volume);
 
-  return interaction.reply({
-    content: `Setting Volume to ${volume}...`,
-    ephemeral: true,
-  });
+  return interaction.reply(Reply.success(`Setting Volume to ${volume}...`));
 });

@@ -1,7 +1,7 @@
 import { MusicActions } from "../../config/music";
 import { Player } from "discord-player";
 import { SlashCommandBuilder } from "discord.js";
-import { command } from "../../utils";
+import { Reply, command } from "../../utils";
 
 const meta = new SlashCommandBuilder()
   .setName("skip")
@@ -19,22 +19,22 @@ export default command(meta, async ({ interaction, client }) => {
   const trackNumber = interaction.options.getNumber("track-number");
 
   if (trackNumber === undefined || trackNumber === null) {
-    MusicActions.skip(player, interaction);
+    const wasSkipped = MusicActions.skip(player, interaction);
+
+    if (!wasSkipped) {
+      return await interaction.reply(
+        Reply.error("No song to skip... The Queue is Empty.")
+      );
+    }
   } else {
     const trackIndex = trackNumber - 1;
     const tracks = await MusicActions.getTracks(player, interaction);
 
     if (trackIndex <= 0 || !tracks || trackIndex > tracks.length)
-      return await interaction.reply({
-        content: "Track not found...",
-        ephemeral: true,
-      });
+      return await interaction.reply(Reply.error("Track not found..."));
 
     MusicActions.skip(player, interaction, trackIndex);
   }
 
-  return await interaction.reply({
-    content: "Skiping track...",
-    ephemeral: true,
-  });
+  return await interaction.reply(Reply.success("Skiping track..."));
 });

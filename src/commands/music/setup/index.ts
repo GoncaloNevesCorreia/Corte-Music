@@ -1,6 +1,6 @@
 import { ChannelType } from "discord.js";
 import { SlashCommandBuilder } from "discord.js";
-import { command } from "../../../utils";
+import { Reply, command } from "../../../utils";
 import { getSetupChannelSelection } from "./pages/channelSelection";
 
 const meta = new SlashCommandBuilder()
@@ -13,10 +13,7 @@ export default command(meta, async ({ interaction }) => {
   );
 
   if (!textChannels) {
-    await interaction.reply({
-      content: "There are no channels in this guild",
-      ephemeral: true,
-    });
+    await interaction.reply(Reply.error("There are no channels in this guild"));
     return;
   }
 

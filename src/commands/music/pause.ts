@@ -1,7 +1,7 @@
 import { MusicActions } from "../../config/music";
 import { Player } from "discord-player";
 import { SlashCommandBuilder } from "discord.js";
-import { command } from "../../utils";
+import { Reply, command } from "../../utils";
 
 const meta = new SlashCommandBuilder()
   .setName("pause")
@@ -10,10 +10,12 @@ const meta = new SlashCommandBuilder()
 export default command(meta, async ({ interaction, client }) => {
   const player = Player.singleton(client);
 
-  await MusicActions.togglePlay(player, interaction, true);
+  const wasPaused = await MusicActions.togglePlay(player, interaction, true);
 
-  return interaction.reply({
-    content: "Paused!",
-    ephemeral: true,
-  });
+  if (!wasPaused)
+    return interaction.reply(
+      Reply.error("No song to pause... the queue is empty.")
+    );
+
+  return interaction.reply(Reply.success("The Current Song was paused!"));
 });

@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "discord.js";
-import { command } from "../../utils";
+import { Reply, command } from "../../utils";
 
 const meta = new SlashCommandBuilder()
   .setName("ping")
@@ -16,12 +16,12 @@ const meta = new SlashCommandBuilder()
 export default command(meta, async ({ interaction }) => {
   const message = interaction.options.getString("message");
 
-  interaction.reply({
-    ephemeral: true,
-    content:
+  interaction.reply(
+    Reply.error(
       message ??
-      `Pong! 🏓\nThe Response time is ${
-        Date.now() - interaction.createdTimestamp
-      }ms`,
-  });
+        `Pong! 🏓\nThe Response time is ${
+          Date.now() - interaction.createdTimestamp
+        }ms`
+    )
+  );
 });

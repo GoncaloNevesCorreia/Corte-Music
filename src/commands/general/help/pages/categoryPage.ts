@@ -26,7 +26,7 @@ export function getHelpCategoryPage(
 
     return {
       ...category,
-      commands: chunk(commands, 2),
+      commands: chunk(commands, 5),
     };
   });
 

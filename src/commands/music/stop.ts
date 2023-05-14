@@ -1,7 +1,7 @@
 import { MusicActions } from "../../config/music";
 import { Player } from "discord-player";
 import { SlashCommandBuilder } from "discord.js";
-import { command } from "../../utils";
+import { Reply, command } from "../../utils";
 
 const meta = new SlashCommandBuilder()
   .setName("stop")
@@ -10,10 +10,10 @@ const meta = new SlashCommandBuilder()
 export default command(meta, async ({ interaction, client }) => {
   const player = Player.singleton(client);
 
-  await MusicActions.stop(player, interaction);
+  const wasStoped = await MusicActions.stop(player, interaction);
 
-  return interaction.reply({
-    content: "Cya...",
-    ephemeral: true,
-  });
+  if (!wasStoped)
+    return interaction.reply(Reply.error("The Queue is already empty."));
+
+  return interaction.reply(Reply.success("Bye 👋"));
 });

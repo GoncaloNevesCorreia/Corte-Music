@@ -1,7 +1,7 @@
 import { MusicActions } from "../../config/music";
 import { Player, QueueFilters } from "discord-player";
 import { SlashCommandBuilder } from "discord.js";
-import { command } from "../../utils";
+import { Reply, command } from "../../utils";
 
 type Filters = keyof QueueFilters;
 
@@ -37,16 +37,16 @@ export default command(meta, async ({ interaction, client }) => {
 
   const filter = interaction.options.getString("filter") as Filters | null;
 
-  await MusicActions.filter(player, interaction, filter);
+  const filterWasSet = await MusicActions.filter(player, interaction, filter);
+
+  if (!filterWasSet) {
+    return interaction.reply(
+      Reply.error("Can't set a filter on a Empty Queue.")
+    );
+  }
 
   if (!filter)
-    return interaction.reply({
-      content: `Disabled Active Filters...`,
-      ephemeral: true,
-    });
+    return interaction.reply(Reply.success("Disabled Active Filters..."));
 
-  return interaction.reply({
-    content: `Setting Filter to ${filter}...`,
-    ephemeral: true,
-  });
+  return interaction.reply(Reply.success(`Setting Filter to ${filter}...`));
 });

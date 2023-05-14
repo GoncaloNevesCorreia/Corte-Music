@@ -6,7 +6,7 @@ import {
 
 import { MusicActions } from "../../config/music";
 import { Player } from "discord-player";
-import { command } from "../../utils";
+import { Reply, command } from "../../utils";
 
 const meta = new SlashCommandBuilder()
   .setName("play")
@@ -20,6 +20,11 @@ const meta = new SlashCommandBuilder()
       .setRequired(true)
   );
 
+const errorMessages = {
+  noVoiceChannel: "You are not in a voice channel!",
+  noResults: "No results found!",
+};
+
 export default command(meta, async ({ interaction, client }) => {
   const player = Player.singleton(client);
 
@@ -28,10 +33,7 @@ export default command(meta, async ({ interaction, client }) => {
   const guild = interaction.guild;
 
   if (!member?.voice?.channel || !guild) {
-    return interaction.reply({
-      content: "You are not in a voice channel!",
-      ephemeral: true,
-    });
+    return interaction.reply(Reply.error(errorMessages.noVoiceChannel));
   }
 
   const query = interaction.options.getString("query", true);
@@ -41,10 +43,7 @@ export default command(meta, async ({ interaction, client }) => {
   });
 
   if (!searchResult?.tracks?.length) {
-    return interaction.reply({
-      content: "No results found!",
-      ephemeral: true,
-    });
+    return interaction.reply(Reply.error(errorMessages.noResults));
   }
 
   const embed = new EmbedBuilder();
