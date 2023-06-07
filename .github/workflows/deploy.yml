@@ -29,4 +29,7 @@ jobs:
       #     envkey_TEST_GUILD: ${{ secrets.TEST_GUILD }}
       #     fail_on_empty: true
 
+      - run: pm2 delete all
+
       - run: npm ci
+      - run: pm2 start npm --name "discord-music-bot" -- start
