@@ -5,11 +5,11 @@ module.exports = {
       script: "npm",
       args: "run start",
 
-      watch: ["../"],
-      watch_delay: 1000,
+      watch: true,
       ignore_watch: ["node_modules", "servers.json"],
       watch_options: {
-        followSymlinks: false,
+        usePolling: true,
+        interval: 1000,
       },
     },
   ],
