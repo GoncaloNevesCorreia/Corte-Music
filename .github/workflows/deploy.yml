@@ -30,4 +30,3 @@ jobs:
           fail_on_empty: true
 
       - run: npm ci
-      - run: npm run start
