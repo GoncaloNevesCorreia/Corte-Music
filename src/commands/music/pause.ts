@@ -8,7 +8,7 @@ const meta = new SlashCommandBuilder()
   .setDescription("Pause the music");
 
 export default command(meta, async ({ interaction, client }) => {
-  // return Reply.success(interaction, "ISTO É UM TESTE DE WORKFLOW");
+  return Reply.success(interaction, "ISTO É UM TESTE DE WORKFLOW");
 
   const player = Player.singleton(client);
 
