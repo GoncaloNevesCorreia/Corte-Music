@@ -13,6 +13,7 @@ jobs:
 
       - name: Copy Files With SSH
         uses: easingthemes/ssh-deploy@main
+
         env:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
           ARGS: "-rltgoDzvO --delete"
@@ -28,5 +29,10 @@ jobs:
           envkey_CLIENT_TOKEN: ${{ secrets.CLIENT_TOKEN }}
           envkey_TEST_GUILD: ${{ secrets.TEST_GUILD }}
           fail_on_empty: true
+
+      - uses: actions/setup-node@master
+        with:
+          node-version: 18.x
+          registry-url: "https://npm.pkg.github.com"
 
       - run: npm ci
