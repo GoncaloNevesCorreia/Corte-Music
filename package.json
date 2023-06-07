@@ -8,7 +8,6 @@
     "build": "npm run clear && tsc",
     "dev": "nodemon",
     "start": "npm run build && node .",
-    "start-prod": "pm2 start npm --name \"discord-music-bot\" -- start",
     "deploy": "cross-env IS_SCRIPT=true ts-node src/scripts/deploy.ts",
     "deploy-prod": "cross-env NODE_ENV=production npm run deploy",
     "bundle": "node esbuild.config.js",
