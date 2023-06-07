@@ -5,7 +5,7 @@
   "main": "build/index.js",
   "scripts": {
     "clear": "rimraf ./build && rimraf ./bundle",
-    "build": "npm run clear && tsc",
+    "build": "npm ci && npm run clear && tsc",
     "dev": "nodemon",
     "start": "npm run build && node .",
     "deploy": "cross-env IS_SCRIPT=true ts-node src/scripts/deploy.ts",
