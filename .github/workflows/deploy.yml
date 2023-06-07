@@ -13,7 +13,7 @@ jobs:
 
       - name: Copy Files With SSH
         uses: easingthemes/ssh-deploy@main
-        with:
+        env:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
           ARGS: "-rltgoDzvO --delete"
           SOURCE: "./"
@@ -22,11 +22,11 @@ jobs:
           TARGET: ${{ secrets.TARGET_DIR }}
           EXCLUDE: "/dist/, /node_modules/, **.env, rebuild_app.sh, watcher.sh"
 
-      - name: Create .env file
-        uses: SpicyPizza/create-envfile@v1.3.0
-        with:
-          envkey_CLIENT_TOKEN: ${{ secrets.CLIENT_TOKEN }}
-          envkey_TEST_GUILD: ${{ secrets.TEST_GUILD }}
-          fail_on_empty: true
+      # - name: Create .env file
+      #   uses: SpicyPizza/create-envfile@v1.3.0
+      #   with:
+      #     envkey_CLIENT_TOKEN: ${{ secrets.CLIENT_TOKEN }}
+      #     envkey_TEST_GUILD: ${{ secrets.TEST_GUILD }}
+      #     fail_on_empty: true
 
       - run: npm ci
