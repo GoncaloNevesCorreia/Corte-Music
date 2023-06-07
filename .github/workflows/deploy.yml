@@ -29,6 +29,9 @@ jobs:
       #     envkey_TEST_GUILD: ${{ secrets.TEST_GUILD }}
       #     fail_on_empty: true
 
+      - run: npm install pm2@latest -g #install pm2 global
+      - run: pm2 -V
+      - run: pm2 list
       - run: pm2 delete all
 
       - run: npm ci
