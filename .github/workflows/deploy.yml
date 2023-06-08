@@ -22,7 +22,8 @@ jobs:
           TARGET: ${{ secrets.TARGET_DIR }}
           EXCLUDE: "/dist/, /node_modules/"
           SCRIPT_AFTER: |
-            echo ${{ secrets.TARGET_DIR }}
+            cd discord-music-bot
+            echo $RSYNC_STDOUT
             ls -al
             # echo 'CLIENT_TOKEN: ${{ secrets.CLIENT_TOKEN }}\nTEST_GUILD: ${{ secrets.TEST_GUILD }}' > .env
             npm ci
