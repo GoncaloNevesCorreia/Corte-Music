@@ -22,9 +22,9 @@ jobs:
           TARGET: ${{ secrets.TARGET_DIR }}
           EXCLUDE: "/dist/, /node_modules/"
           SCRIPT_AFTER: |
-            echo $TARGET_DIR
+            echo ${{ secrets.TARGET_DIR }}
             ls -al
-            # echo 'CLIENT_TOKEN: $CLIENT_TOKEN\nTEST_GUILD: $TEST_GUILD' > .env
+            # echo 'CLIENT_TOKEN: ${{ secrets.CLIENT_TOKEN }}\nTEST_GUILD: ${{ secrets.TEST_GUILD }}' > .env
             npm ci
             pm2 stop discord_music_bot
             pm2 start npm --name "discord_music_bot" -- start
