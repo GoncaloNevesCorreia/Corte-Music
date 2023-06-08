@@ -23,7 +23,9 @@ jobs:
           EXCLUDE: "/dist/, /node_modules/"
           SCRIPT_AFTER: |
             pwd
-            echo 'CLIENT_TOKEN: $CLIENT_TOKEN\nTEST_GUILD: $TEST_GUILD' > .env
+            whoami
+            ls -al
+            # echo 'CLIENT_TOKEN: $CLIENT_TOKEN\nTEST_GUILD: $TEST_GUILD' > .env
             npm ci
             pm2 stop discord_music_bot
             pm2 start npm --name "discord_music_bot" -- start
