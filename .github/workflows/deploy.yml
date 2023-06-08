@@ -23,6 +23,7 @@ jobs:
           EXCLUDE: "/dist/, /node_modules/"
           SCRIPT_AFTER: |
             cd $TARGET_DIR
+            pwd
             echo 'CLIENT_TOKEN: $CLIENT_TOKEN\nTEST_GUILD: $TEST_GUILD' > .env
             npm ci
             pm2 stop discord_music_bot
