@@ -21,14 +21,6 @@ jobs:
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: ${{ secrets.TARGET_DIR }}
           EXCLUDE: "/dist/, /node_modules/"
-          SCRIPT_AFTER: |
-            cd discord-music-bot
-            echo $RSYNC_STDOUT
-            ls -al
-            # echo 'CLIENT_TOKEN: ${{ secrets.CLIENT_TOKEN }}\nTEST_GUILD: ${{ secrets.TEST_GUILD }}' > .env
-            npm ci
-            pm2 stop discord_music_bot
-            pm2 start npm --name "discord_music_bot" -- start
 
       # - name: Create .env file
       #   uses: SpicyPizza/create-envfile@v1.3.0
@@ -36,3 +28,25 @@ jobs:
       #     envkey_CLIENT_TOKEN: ${{ secrets.CLIENT_TOKEN }}
       #     envkey_TEST_GUILD: ${{ secrets.TEST_GUILD }}
       #     fail_on_empty: true
+
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_CLIENT_TOKEN: ${{ secrets.CLIENT_TOKEN }}
+          envkey_TEST_GUILD: ${{ secrets.TEST_GUILD }}
+          directory: ${{ secrets.TARGET_DIR }}
+          file_name: .env
+          fail_on_empty: false
+
+      - name: Install dependencies & Start Application
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd discord-music-bot
+            npm ci
+            pm2 stop discord_music_bot
+            pm2 start npm --name "discord_music_bot" -- start
