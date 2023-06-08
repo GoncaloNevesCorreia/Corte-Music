@@ -11,17 +11,17 @@ jobs:
       - name: Checkout the files
         uses: actions/checkout@v3
 
-      - name: Copy Files With SSH
-        uses: easingthemes/ssh-deploy@main
+      # - name: Copy Files With SSH
+      #   uses: easingthemes/ssh-deploy@main
 
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-          ARGS: "-rltgoDzvO --delete"
-          SOURCE: "./"
-          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-          REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          TARGET: ${{ secrets.TARGET_DIR }}
-          EXCLUDE: "/dist/, /node_modules/, **.env, rebuild_app.sh, watcher.sh"
+      #   env:
+      #     SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+      #     ARGS: "-rltgoDzvO --delete"
+      #     SOURCE: "./"
+      #     REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+      #     REMOTE_USER: ${{ secrets.REMOTE_USER }}
+      #     TARGET: ${{ secrets.TARGET_DIR }}
+      #     EXCLUDE: "/dist/, /node_modules/, **.env, rebuild_app.sh, watcher.sh"
 
       - name: Create .env file
         uses: SpicyPizza/create-envfile@v1.3.0
@@ -30,9 +30,16 @@ jobs:
           envkey_TEST_GUILD: ${{ secrets.TEST_GUILD }}
           fail_on_empty: true
 
-      - uses: actions/setup-node@master
+      - name: executing remote ssh commands using KEY
+        uses: appleboy/ssh-action@v0.1.10
         with:
-          node-version: 18.x
-          registry-url: "https://npm.pkg.github.com"
-
-      - run: npm ci
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd ${{ secrets.TARGET_DIR }}
+            git pull
+            npm i
+            pm2 stop discord_music_bot
+            pm2 start npm --name "discord_music_bot" -- start
