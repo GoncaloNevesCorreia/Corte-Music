@@ -22,8 +22,7 @@ jobs:
           TARGET: ${{ secrets.TARGET_DIR }}
           EXCLUDE: "/dist/, /node_modules/"
           SCRIPT_AFTER: |
-            pwd
-            whoami
+            cd $TARGET_DIR
             ls -al
             # echo 'CLIENT_TOKEN: $CLIENT_TOKEN\nTEST_GUILD: $TEST_GUILD' > .env
             npm ci
